@@ -18,7 +18,9 @@ func CheckAuth(c *gin.Context) {
 	tokenString, err := c.Cookie("Authorization")
 
 	if err != nil {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"message": "Authorization token missing.",
+		})
 
 		return
 	}
@@ -58,7 +60,10 @@ func CheckAuth(c *gin.Context) {
 
 		c.Next()
 	} else {
-		fmt.Println(err)
-	}
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"message": "Authorization token invalid.",
+		})
 
+		return
+	}
 }
