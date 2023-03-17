@@ -19,6 +19,8 @@ func CheckAuth(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusUnauthorized)
+
+		return
 	}
 
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -31,11 +33,15 @@ func CheckAuth(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
+
+		return
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		if float64(time.Now().Unix()) > claims["exp"].(float64) {
 			c.AbortWithStatus(http.StatusUnauthorized)
+
+			return
 		}
 
 		var currentUser models.User
@@ -44,6 +50,8 @@ func CheckAuth(c *gin.Context) {
 
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			c.AbortWithStatus(http.StatusUnauthorized)
+
+			return
 		}
 
 		c.Set("currentUser", currentUser)
