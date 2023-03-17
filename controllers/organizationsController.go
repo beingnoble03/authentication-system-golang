@@ -35,6 +35,23 @@ func CreateOrganization(c *gin.Context) {
 		return
 	}
 
+	currentUser, _ := c.Get("currentUser")
+
+	// Make the current user the admin of the organizaiton
+	organizationUser := models.OrganizationUser{
+		UserID:         currentUser.(models.User).ID,
+		OrganizationID: organization.ID,
+		IsAdmin:        true,
+	}
+
+	result = initializers.Db.Create(&organizationUser)
+
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Error occured while declaring the user as admin.",
+		})
+	}
+
 	c.JSON(http.StatusCreated, gin.H{
 		"id": organization.ID,
 	})
