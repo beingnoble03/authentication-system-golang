@@ -11,6 +11,9 @@ import (
 func GetUsersFromOrganization(c *gin.Context) {
 	var organizationID, _ = c.Params.Get("id")
 
+	currentUser, _ := c.Get("currentUser")
+
+	// Check if the organization exists
 	result := initializers.Db.Where("id", organizationID).Take(&models.Organization{})
 
 	if result.Error != nil {
@@ -28,6 +31,23 @@ func GetUsersFromOrganization(c *gin.Context) {
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "Error occured while fetching members.",
+		})
+
+		return
+	}
+
+	// Check if the current user is a member of the organization
+	isCurrentUserMember := false
+
+	for _, organizaitonUser := range organizationUsers {
+		if organizaitonUser.UserID == currentUser.(models.User).ID {
+			isCurrentUserMember = true
+		}
+	}
+
+	if !isCurrentUserMember {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"message": "Only members of the organization can view other members.",
 		})
 
 		return

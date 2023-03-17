@@ -20,9 +20,10 @@ func init() {
 func main() {
 	r := gin.Default()
 
+	// A user needs to be created in the database without the API.
 	// These endpoints are not in the scope of task. Made for easier modification of data.
 	r.GET("/validate", middlewares.CheckAuth, handlers.Greeting)
-	r.POST("/createOrganization", controllers.CreateOrganization)
+	r.POST("/createOrganization", middlewares.CheckAuth, controllers.CreateOrganization)
 	r.POST("/makeUserAdmin", handlers.MakeUserAdmin)
 
 	// These endpoints are in the scope of task.
