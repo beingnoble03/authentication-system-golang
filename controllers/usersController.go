@@ -3,13 +3,11 @@ package controllers
 import (
 	"errors"
 	"net/http"
-	"os"
-	"time"
 
 	"github.com/beingnoble03/octern-main/initializers"
 	"github.com/beingnoble03/octern-main/models"
+	"github.com/beingnoble03/octern-main/utils"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -137,31 +135,43 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": user.ID,
-		"exp": time.Now().Add(1 * time.Hour).Unix(),
-	})
-
-	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	// Generate new access token with 1 hour expiry time
+	accessTokenString, err := utils.GenerateAccessTokenString(&user)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Unable to generate token.",
+			"message": "Unable to generate access token.",
 		})
 
 		return
 	}
 
 	c.SetSameSite(http.SameSiteLaxMode)
-	c.SetCookie("Authorization", tokenString, 3600, "", "", false, true)
+	c.SetCookie("Authorization", accessTokenString, 5, "", "", false, true)
+
+	// Generate new refresh token with 24 hours expiry time
+	refreshTokenString, err := utils.GenerateRefreshTokenString(&user)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Unable to generate refresh token.",
+		})
+
+		return
+	}
+
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("RefreshToken", refreshTokenString, 24*3600, "", "", false, true)
 
 	c.JSON(http.StatusOK, gin.H{
-		"token": tokenString,
+		"access_token":  accessTokenString,
+		"refresh_token": refreshTokenString,
 	})
 }
 
 func Logout(c *gin.Context) {
 	c.SetCookie("Authorization", "", -1, "", "", false, true)
+	c.SetCookie("RefreshToken", "", -1, "", "", false, true)
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "You have been successfully logged out.",

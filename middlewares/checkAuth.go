@@ -9,6 +9,7 @@ import (
 
 	"github.com/beingnoble03/octern-main/initializers"
 	"github.com/beingnoble03/octern-main/models"
+	"github.com/beingnoble03/octern-main/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"gorm.io/gorm"
@@ -18,11 +19,9 @@ func CheckAuth(c *gin.Context) {
 	tokenString, err := c.Cookie("Authorization")
 
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"message": "Authorization token missing.",
-		})
+		utils.RegenerateAccessToken(c)
 
-		return
+		c.Next()
 	}
 
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -30,7 +29,7 @@ func CheckAuth(c *gin.Context) {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 
-		return []byte(os.Getenv("JWT_SECRET")), nil
+		return []byte(os.Getenv("JWT_ACCESS_SECRET")), nil
 	})
 
 	if err != nil {
@@ -40,10 +39,11 @@ func CheckAuth(c *gin.Context) {
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		// Regenerate access token using refresh token
 		if float64(time.Now().Unix()) > claims["exp"].(float64) {
-			c.AbortWithStatus(http.StatusUnauthorized)
+			utils.RegenerateAccessToken(c)
 
-			return
+			c.Next()
 		}
 
 		var currentUser models.User
