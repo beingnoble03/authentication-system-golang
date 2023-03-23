@@ -21,6 +21,7 @@ An organization-user JWT authentication system. Made using golang, gin, gorm and
  - `gin` - It is most popular go framework that is designed for building APIs. Hence, I have used gin to complete the task.
  - `go-jwt` - It is the most popular package for implementing JWTs in Go. It has many pre-defined functions for signing and validating JWTs. Hence, used I have used it here, to sign and validate access_token and refresh_token.
  - `gorm` - It is the most popular ORM package in the Go ecosystem. Makes it really easy to create models and querying through database.
+ - `bcrypt` - It implements Provos and Mazières's bcrypt adaptive hashing algorithm. Used to hash passwords to store in database.
 
 #### DATABASE STRUCTURE
 
