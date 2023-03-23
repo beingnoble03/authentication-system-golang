@@ -1,0 +1,189 @@
+openapi: 3.0.1
+info:
+  title: Authorization-Authentication-Golang
+  description: An API documentation for organization-user JWT authentication system. Made using golang, gin, gorm and go-jwt.
+  version: "0.1"
+servers:
+  - url: http://localhost:3000
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: Authorization
+paths:
+  /removeMember:
+    post:
+      security:
+        - cookieAuth: []
+      description: Remove the member from an organization provided the current user is an admin of the organization.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                organization_id:
+                  type: integer
+            examples:
+              "0":
+                value: |-
+                  {
+                      "user_id": 21,
+                      "organization_id": 1
+                  }
+      responses:
+        "200":
+          description: Auto generated using Swagger Inspector
+          content:
+            application/json; charset=utf-8:
+              schema:
+                type: string
+              examples: {}
+      servers:
+        - url: http://localhost:3000
+    servers:
+      - url: http://localhost:3000
+  /login:
+    post:
+      description: The current user is logged in, provided the correct username and password is passed.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                username:
+                  type: string
+            examples:
+              "0":
+                value: |-
+                  {
+                      "username": "testorg3user",
+                      "password": "password"
+                  }
+      responses:
+        "200":
+          description: Auto generated using Swagger Inspector
+          content:
+            application/json; charset=utf-8:
+              schema:
+                type: string
+              examples: {}
+      servers:
+        - url: http://localhost:3000
+    servers:
+      - url: http://localhost:3000
+  /logout:
+    get:
+      security:
+        - cookieAuth: []
+      description: The current user is logged out.
+      responses:
+        "200":
+          description: Auto generated using Swagger Inspector
+          content:
+            application/json; charset=utf-8:
+              schema:
+                type: string
+              examples: {}
+      servers:
+        - url: http://localhost:3000
+    servers:
+      - url: http://localhost:3000
+  /createOrganization:
+    post:
+      security:
+        - cookieAuth: []
+      description: Creates an organization and makes the creator of the organization an admin of the organization.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+            examples:
+              "0":
+                value: |-
+                  {
+                      "name": "swagger-testing"
+                  }
+      responses:
+        "201":
+          description: Auto generated using Swagger Inspector
+          content:
+            application/json; charset=utf-8:
+              schema:
+                type: string
+              examples: {}
+      servers:
+        - url: http://localhost:3000
+    servers:
+      - url: http://localhost:3000
+  /getUsersFromOrganization/{organizationID}:
+    get:
+      security:
+        - cookieAuth: []
+      description: Get members of an organization provided the current user is also a member
+      parameters:
+        - in: path
+          name: organizationID
+          schema:
+            type: integer
+          required: true
+          description: Numeric ID of the organization to get members from
+      responses:
+        "200":
+          description: Auto generated using Swagger Inspector
+          content:
+            application/json; charset=utf-8:
+              schema:
+                type: string
+              examples: {}
+      servers:
+        - url: http://localhost:3000
+    servers:
+      - url: http://localhost:3000
+  /createUser:
+    post:
+      security:
+        - cookieAuth: []
+      description: Creates a new user for an organization provided that the current user is an admin of the organization.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                organization_id:
+                  type: integer
+                username:
+                  type: string
+            examples:
+              "0":
+                value: |-
+                  {
+                      "username": "testUser5",
+                      "password": "password",
+                      "organization_id": 1
+                  }
+      responses:
+        "201":
+          description: Auto generated using Swagger Inspector
+          content:
+            application/json; charset=utf-8:
+              schema:
+                type: string
+              examples: {}
+      servers:
+        - url: http://localhost:3000
+    servers:
+      - url: http://localhost:3000

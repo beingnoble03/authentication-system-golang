@@ -34,7 +34,6 @@ func RegenerateAccessToken(c *gin.Context) {
 	})
 
 	if err != nil {
-		fmt.Println("adssad")
 		c.AbortWithStatus(http.StatusBadRequest)
 
 		return
