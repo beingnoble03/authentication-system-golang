@@ -1,6 +1,14 @@
 ## Authentication-Authorization-Golang
 An organization-user JWT authentication system. Made using golang, gin, gorm and go-jwt.
 
+
+> Swagger documentation can be viewed [here](https://beingnoble03.github.io/authentication-system-golang/).
+
+
+#### REFERENCE VIDEO
+
+https://user-images.githubusercontent.com/62551163/227226228-7cd1b34d-5192-4960-902a-c85eea0c6631.mp4
+
 #### INSTALLATION
 
  - Clone this repo
@@ -40,10 +48,3 @@ An organization-user JWT authentication system. Made using golang, gin, gorm and
  
  - **/createOrganization** POST - Creates an organization and makes the creator of the organization an admin of the organization.
  - **/makeUserAdmin** POST - Makes an existing user an admin of an organization. [No validations here. Just for modifying data.]
-
-#### REFERENCE VIDEO
-
-https://user-images.githubusercontent.com/62551163/227226228-7cd1b34d-5192-4960-902a-c85eea0c6631.mp4
-
-
-
