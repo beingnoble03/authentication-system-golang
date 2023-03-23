@@ -70,7 +70,7 @@ func RegenerateAccessToken(c *gin.Context) {
 		}
 
 		c.SetSameSite(http.SameSiteLaxMode)
-		c.SetCookie("Authorization", accessTokenString, 5, "", "", false, true)
+		c.SetCookie("Authorization", accessTokenString, 3600, "", "", false, true)
 
 		c.Set("currentUser", currentUser)
 	} else {

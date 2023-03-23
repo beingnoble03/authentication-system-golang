@@ -147,7 +147,7 @@ func Login(c *gin.Context) {
 	}
 
 	c.SetSameSite(http.SameSiteLaxMode)
-	c.SetCookie("Authorization", accessTokenString, 5, "", "", false, true)
+	c.SetCookie("Authorization", accessTokenString, 3600, "", "", false, true)
 
 	// Generate new refresh token with 24 hours expiry time
 	refreshTokenString, err := utils.GenerateRefreshTokenString(&user)
